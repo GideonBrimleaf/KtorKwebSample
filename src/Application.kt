@@ -20,8 +20,6 @@ import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-@Suppress("unused") // Referenced in application.conf
-@kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
     install(FreeMarker) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
@@ -42,7 +40,12 @@ fun Application.module(testing: Boolean = false) {
         }
 
         get("/freemarker-async-response") {
-            call.respond(FreeMarkerContent("index.ftl", mapOf("data" to IndexData(listOf(1, 2, 3))), ""))
+            val name = KVar("Loading")
+            GlobalScope.launch {
+                delay(3000L)
+                name.value = "Han Solo"
+            }
+            call.respond(FreeMarkerContent("index.ftl", mapOf("data" to name)))
         }
 
         get("/kweb-async-response") {
@@ -59,6 +62,4 @@ fun Application.module(testing: Boolean = false) {
         }
     }
 }
-
-data class IndexData(val items: List<Int>)
 
