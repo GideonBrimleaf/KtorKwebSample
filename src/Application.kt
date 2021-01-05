@@ -45,7 +45,7 @@ fun Application.module(testing: Boolean = false) {
                 delay(3000L)
                 name.value = "Han Solo"
             }
-            call.respond(FreeMarkerContent("index.ftl", mapOf("data" to name)))
+            call.respond(FreeMarkerContent("index.ftl", mapOf("name" to name.map { "The name is $it" })))
         }
 
         get("/kweb-async-response") {
