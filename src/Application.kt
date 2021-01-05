@@ -39,15 +39,6 @@ fun Application.module(testing: Boolean = false) {
             call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
         }
 
-        get("/freemarker-async-response") {
-            val name = KVar("Loading")
-            GlobalScope.launch {
-                delay(3000L)
-                name.value = "Han Solo"
-            }
-            call.respond(FreeMarkerContent("index.ftl", mapOf("name" to name.map { "The name is $it" })))
-        }
-
         get("/kweb-async-response") {
             call.respondKweb {
                 doc.body {
@@ -59,6 +50,15 @@ fun Application.module(testing: Boolean = false) {
                     h1().text(name.map{ "The name is $it" })
                 }
             }
+        }
+
+        get("/freemarker-async-response") {
+            val name = KVar("Loading")
+            GlobalScope.launch {
+                delay(3000L)
+                name.value = "Han Solo"
+            }
+            call.respond(FreeMarkerContent("index.ftl", mapOf("name" to name.map { "The name is $it" })))
         }
     }
 }
