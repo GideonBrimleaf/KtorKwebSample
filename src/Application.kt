@@ -12,10 +12,9 @@ import io.ktor.websocket.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kweb.Kweb
-import kweb.h1
-import kweb.respondKweb
+import kweb.*
 import kweb.state.KVar
+import kweb.state.render
 import java.time.Duration
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -58,7 +57,27 @@ fun Application.module(testing: Boolean = false) {
                 delay(3000L)
                 name.value = "Han Solo"
             }
+//            val element = Element(jsExpression = """document.getElementById("header-name")""")
             call.respond(FreeMarkerContent("index.ftl", mapOf("name" to name.map { "The name is $it" })))
+        }
+
+        get("/dynamic-input") {
+            call.respondKweb {
+                doc.body {
+                    h1().text("I'm Mary Poppins Y'All!")
+                    p().text("What is your name?")
+                    val textField = input()
+                    val name = KVar("")
+                    textField.value = name
+                    render(name) {
+                        if (name.value == "") {
+                            p().text("Enter a name")
+                        } else {
+                            p().text(name.map { "Hello $it" })
+                        }
+                    }
+                }
+            }
         }
     }
 }
