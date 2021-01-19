@@ -1,6 +1,6 @@
 <#-- @ftlvariable name="name" -->
 <html>
     <body>
-        <h1>${name}<h1>
+        <h1 id="header-name">${name}<h1>
     </body>
 </html>
